@@ -16,12 +16,14 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.config.update({
-    'SECRET_KEY': 'Trial'
+    'SECRET_KEY': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIwZWNmMmI0YS00ZDkwLTQ0MDktOGNiZC1mZGM4NWFiZjYyOWUifQ.eyJleHAiOjE2Njk2NzQ5NTAsImlhdCI6MTY2OTU4ODU1MCwianRpIjoiOGU1MjNiNzQtODAxMS00ZmRlLTk0MWMtM2IwMTcwYWJiMzRkIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwL3JlYWxtcy90cmlhbCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMC9yZWFsbXMvdHJpYWwiLCJ0eXAiOiJJbml0aWFsQWNjZXNzVG9rZW4ifQ.zTBY9sPlMDWWbdXzL_jStqZYVTlpFEhwRN2gWEE2EHc'
+    'TESTING': True,
+    'DEBUG': True,
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
     'OIDC_USER_INFO_ENABLED': True,
-    'OIDC_OPENID_REALM': 'flask-demo',
+    'OIDC_OPENID_REALM': 'trial',
     'OIDC_SCOPES': ['openid', 'email', 'profile'],
     'OIDC_INTROSPECTION_AUTH_METHOD': 'client_secret_post'
 })
@@ -36,12 +38,12 @@ def hello_world():
                 '<a href="/logout">Log out</a>') % \
             oidc.user_getfield('username')
     else:
-        return 'Welcome anonymous, <a href="/private">Log in</a>'
+        return 'Welcome please register, <a href="/private">Log in</a>'
 
 
 @app.route('/private')
 @oidc.require_login
-def hello_me():
+def hello():
     info = oidc.user_getinfo(['username', 'email', 'sub'])
 
     username = info.get('username')
@@ -57,7 +59,7 @@ def hello_me():
             # YOLO
             greeting = requests.get('http://localhost:8080/greeting', headers=headers).text
         except:
-            print ("Could not access greeting-service")
+            print ("Bad request")
             greeting = "Hello %s" % username
     
 

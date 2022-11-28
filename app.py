@@ -42,10 +42,6 @@ def hello_world():
 @app.route('/private')
 @oidc.require_login
 def hello_me():
-    """Example for protected endpoint that extracts private information from the OpenID Connect id_token.
-       Uses the accompanied access_token to access a backend service.
-    """
-
     info = oidc.user_getinfo(['username', 'email', 'sub'])
 
     username = info.get('username')
@@ -76,15 +72,13 @@ def hello_me():
 @app.route('/api', methods=['POST'])
 @oidc.accept_token(require_token=True, scopes_required=['openid'])
 def hello_api():
-    """OAuth 2.0 protected API endpoint accessible via AccessToken"""
 
     return json.dumps({'hello': 'Welcome %s' % g.oidc_token_info['sub']})
 
 
 @app.route('/logout')
 def logout():
-    """Performs local logout by removing the session cookie."""
-
+    
     oidc.logout()
     return 'Hi, you have been logged out! <a href="/">Return</a>'
 

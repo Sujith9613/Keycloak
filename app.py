@@ -16,9 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.config.update({
-    'SECRET_KEY': 'SomethingNotEntirelySecret',
-    'TESTING': True,
-    'DEBUG': True,
+    'SECRET_KEY': 'Trial'
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
@@ -36,7 +34,7 @@ def hello_world():
     if oidc.user_loggedin:
         return ('Hello, %s, <a href="/private">See private</a> '
                 '<a href="/logout">Log out</a>') % \
-            oidc.user_getfield('preferred_username')
+            oidc.user_getfield('username')
     else:
         return 'Welcome anonymous, <a href="/private">Log in</a>'
 
@@ -48,9 +46,9 @@ def hello_me():
        Uses the accompanied access_token to access a backend service.
     """
 
-    info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
+    info = oidc.user_getinfo(['username', 'email', 'sub'])
 
-    username = info.get('preferred_username')
+    username = info.get('username')
     email = info.get('email')
     user_id = info.get('sub')
 
